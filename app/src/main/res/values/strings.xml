@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">QR 掃瞄器</string>
+    <string name="about" >關於</string>
+    <string name="entry_detail">書籍詳細資料</string>
+    <string name="entry_name">書名</string>
+    <string name="scan_time">掃瞄時間</string>
+    <string name="scan">掃瞄</string>
+    <string name="no_data_available">暫無資料</string>
+</resources>
