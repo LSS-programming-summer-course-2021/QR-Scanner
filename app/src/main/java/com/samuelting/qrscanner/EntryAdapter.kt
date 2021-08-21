@@ -1,10 +1,12 @@
 package com.samuelting.qrscanner
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+
 
 class EntryAdapter(private val dataSet: MutableList<Entry>) :
     RecyclerView.Adapter<EntryAdapter.ViewHolder>() {

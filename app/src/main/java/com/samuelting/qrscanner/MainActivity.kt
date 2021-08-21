@@ -22,8 +22,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        recyclerView = findViewById(R.id.entryList)
+
         emptyView = findViewById(R.id.empty_view)
+        recyclerView = findViewById(R.id.entryList)
         recyclerView.layoutManager = LinearLayoutManager(this)
         entryList = mutableListOf()
         recyclerView.adapter = EntryAdapter(entryList)
@@ -54,14 +55,6 @@ class MainActivity : AppCompatActivity() {
         integrator.initiateScan();
     }
 
-    private fun openAboutActivity(){
-        var intent = Intent(this, AboutActivity::class.java)
-        startActivity(intent);
-    }
-
-    private fun oopenCodeDetailActivity(){
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
@@ -80,4 +73,10 @@ class MainActivity : AppCompatActivity() {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
+
+    private fun openAboutActivity(){
+        var intent = Intent(this, AboutActivity::class.java)
+        startActivity(intent);
+    }
+
 }
