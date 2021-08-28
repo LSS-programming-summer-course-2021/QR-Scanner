@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.entryList)
         recyclerView.layoutManager = LinearLayoutManager(this)
         entryList = mutableListOf()
-        recyclerView.adapter = EntryAdapter(entryList)
+        recyclerView.adapter = EntryAdapter(this, entryList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
