@@ -1,7 +1,9 @@
 package com.samuelting.qrscanner
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -10,24 +12,42 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.google.zxing.integration.android.IntentIntegrator
 import java.util.*
 
+val itemType = object : TypeToken<MutableList<Entry>>() {}.type
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyView: TextView
     private lateinit var entryList: MutableList<Entry>
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        sharedPreferences = getSharedPreferences("QRScanner", MODE_PRIVATE)
         setContentView(R.layout.activity_main)
 
         emptyView = findViewById(R.id.empty_view)
         recyclerView = findViewById(R.id.entryList)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        entryList = mutableListOf()
+        val gson = Gson()
+        val json = sharedPreferences.getString("QRScanner", null)
+        if (json == "" || json == null){
+            Log.d("QRScanner", "Not found")
+            entryList = mutableListOf()
+        }else{
+            Log.d("QRScanner", json )
+            entryList = gson.fromJson(json, itemType)
+        }
         recyclerView.adapter = EntryAdapter(this, entryList)
+        if (entryList.count() > 0){
+            emptyView.visibility = View.GONE
+        }else{
+            emptyView.visibility = View.VISIBLE
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -69,6 +89,7 @@ class MainActivity : AppCompatActivity() {
                     emptyView.visibility = View.VISIBLE
                 }
             }
+            saveScanResult()
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -79,4 +100,11 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent);
     }
 
+    private fun saveScanResult(){
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        val gson = Gson()
+        val json: String = gson.toJson(entryList)
+        editor.putString("QRScanner", json)
+        editor.commit()
+    }
 }
