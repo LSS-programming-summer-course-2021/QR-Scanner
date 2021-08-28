@@ -1,18 +1,18 @@
 package com.samuelting.qrscanner
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 
 
 class EntryAdapter(private val context: Context, private val dataSet: MutableList<Entry>) :
@@ -24,6 +24,7 @@ class EntryAdapter(private val context: Context, private val dataSet: MutableLis
      */
     class ViewHolder(context: Context, view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.name)
+        val deleteButton: ImageButton = view.findViewById(R.id.delete)
 
         init {
             // Define click listener for the ViewHolder's View.
@@ -44,6 +45,7 @@ class EntryAdapter(private val context: Context, private val dataSet: MutableLis
                     clipboard!!.setPrimaryClip(clip)
                 }
             }
+
         }
     }
 
@@ -62,6 +64,19 @@ class EntryAdapter(private val context: Context, private val dataSet: MutableLis
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.textView.text = "${dataSet[position].name}"
+        viewHolder.deleteButton.setOnClickListener {
+            dataSet.remove(dataSet[position])
+            notifyDataSetChanged()
+            var sharedPreferences = context.getSharedPreferences("QRScanner",
+                AppCompatActivity.MODE_PRIVATE
+            )
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            val gson = Gson()
+            val json: String = gson.toJson(dataSet)
+            editor.putString("QRScanner", json)
+            editor.commit()
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
